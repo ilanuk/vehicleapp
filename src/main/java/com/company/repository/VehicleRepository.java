@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.company.model.Vehicle;
+import com.company.utils.RestException;
 
 @Repository
 public class VehicleRepository {
@@ -50,7 +51,12 @@ public class VehicleRepository {
 	 * Find
 	 */
 	public Vehicle find(Long id) {
-		return vehicleJpaRepository.findOne(id);
+		Vehicle vehicle = vehicleJpaRepository.findOne(id);
+		if(vehicle==null) {
+			throw new RestException(1, "Vehicle not found!",
+					"Vehicle with id: "+ id + "not found in the system");
+		}
+		return vehicle;
 	}
 
 	/**
