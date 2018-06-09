@@ -30,7 +30,7 @@ import com.company.model.Vehicle;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class VehicleRestEndpointTests1 {
-    private static final String BASE_URI = "http://localhost:8080/api";
+    private static final String BASE_URI = "http://localhost:8080";
     private static final int UNKNOWN_ID = Integer.MAX_VALUE;
 
    
@@ -38,7 +38,7 @@ public class VehicleRestEndpointTests1 {
 	public void listVehiclesWorksOK() {
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<Vehicle> result =
-				template.getForEntity("http://localhost:8080/api/vehicles/1", 
+				template.getForEntity(BASE_URI +"/vehicles/1", 
 						Vehicle.class);
 		assertNotNull(result);
 		assertNotNull(result.getBody());
@@ -143,7 +143,8 @@ public class VehicleRestEndpointTests1 {
 
     @Test
     public void getLastVehicle(){
-		ParameterizedTypeReference<List<Vehicle>>  parameterizedTypeReference = new ParameterizedTypeReference<List<Vehicle>>(){};
+		ParameterizedTypeReference<List<Vehicle>>  parameterizedTypeReference = 
+				new ParameterizedTypeReference<List<Vehicle>>(){};
 		RestTemplate template = new RestTemplate();
         ResponseEntity<List<Vehicle>> response =
         		template.exchange(BASE_URI+"/vehicles", HttpMethod.GET,null,parameterizedTypeReference);
