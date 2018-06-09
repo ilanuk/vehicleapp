@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQuery(name="Vehicle.findAllVehiclesByType", query="select m from Vehicle m where m.vehicleType.name = :name")
 public class Vehicle {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	private String name;	

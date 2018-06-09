@@ -1,3 +1,7 @@
+/*SET MODE MYSQL*/; /* another h2 way to set mode */
+;
+CREATE SCHEMA IF NOT EXISTS "public"; /* required due to issue with flyway --> https://stackoverflow.com/a/19115417/1224584*/
+;
 ;              
 CREATE USER IF NOT EXISTS SA SALT '9066695376c74046' HASH 'f7eeb561fbcd16ddc0f7b5413dee5d9107c89d3cc4786c70bfc95c6751d9540a' ADMIN;            
 DROP TABLE IF EXISTS PUBLIC.LOCATION CASCADE;

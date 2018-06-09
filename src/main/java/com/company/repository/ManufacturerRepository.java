@@ -2,6 +2,7 @@ package com.company.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,8 +44,8 @@ public class ManufacturerRepository {
 	/**
 	 * Find
 	 */
-	public Manufacturer find(Long id) {
-		return manufacturerJpaRepository.findOne(id);
+	public Optional<Manufacturer> find(Long id) {
+		return manufacturerJpaRepository.findById(id);
 	}
 
 	/**

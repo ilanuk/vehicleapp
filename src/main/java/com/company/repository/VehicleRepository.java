@@ -2,6 +2,7 @@ package com.company.repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,8 +51,8 @@ public class VehicleRepository {
 	/**
 	 * Find
 	 */
-	public Vehicle find(Long id) {
-		Vehicle vehicle = vehicleJpaRepository.findOne(id);
+	public Optional<Vehicle> find(Long id) {
+		Optional<Vehicle> vehicle = vehicleJpaRepository.findById(id);
 		if(vehicle==null) {
 			throw new RestException(1, "Vehicle not found!",
 					"Vehicle with id: "+ id + "not found in the system");

@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 @Entity(name="VEHICLETYPE")
 public class VehicleType {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	private String name;	

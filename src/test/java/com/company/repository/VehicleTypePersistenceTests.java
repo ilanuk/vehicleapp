@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,8 +12,9 @@ import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +22,8 @@ import com.company.MainApplication;
 import com.company.model.VehicleType;
 import com.company.repository.VehicleTypeJpaRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MainApplication.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class VehicleTypePersistenceTests {
 	@Autowired
 	private VehicleTypeJpaRepository vehicleTypeJpaRepository;
@@ -41,7 +42,8 @@ public class VehicleTypePersistenceTests {
 		// this is a test only thing and normally doesn't need to be done in prod code
 		entityManager.clear();
 
-		VehicleType otherVehicleType = vehicleTypeJpaRepository.findOne(vt.getId());
+		Optional<VehicleType> ov = vehicleTypeJpaRepository.findById(vt.getId());
+		VehicleType otherVehicleType = ov.get();
 		assertEquals("Test Vehicle Type", otherVehicleType.getName());
 		
 		vehicleTypeJpaRepository.delete(otherVehicleType);
@@ -49,8 +51,9 @@ public class VehicleTypePersistenceTests {
 
 	@Test
 	public void testFind() throws Exception {
-		VehicleType vt = vehicleTypeJpaRepository.findOne(1L);
-		assertEquals("Car", vt.getName());
+		Optional<VehicleType> vt = vehicleTypeJpaRepository.findById(1L);
+		VehicleType vtype = vt.get();
+		assertEquals("Car", vtype.getName());
 	}
 
 	@Test

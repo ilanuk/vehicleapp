@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
 	    + "WHERE (mt.name = ?)", resultClass = Manufacturer.class)
 public class Manufacturer {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	private String name;

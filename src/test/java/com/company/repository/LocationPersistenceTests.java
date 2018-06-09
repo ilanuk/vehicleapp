@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,8 +13,9 @@ import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +23,8 @@ import com.company.MainApplication;
 import com.company.model.Location;
 import com.company.repository.LocationJpaRepository;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MainApplication.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class LocationPersistenceTests {
 	@Autowired
 	private LocationJpaRepository locationJpaRepository;
@@ -65,12 +66,13 @@ public class LocationPersistenceTests {
 		// this is a test only thing and normally doesn't need to be done in prod code
 		entityManager.clear();
 
-		Location otherLocation = locationJpaRepository.findOne(location.getId());
-		assertEquals("Canada", otherLocation.getCountry());
-		assertEquals("British Columbia", otherLocation.getState());
+		Optional<Location> otherLocation = locationJpaRepository.findById(location.getId());
+		Location loc = otherLocation.get();
+		assertEquals("Canada", loc.getCountry());
+		assertEquals("British Columbia", loc.getState());
 		
 		//delete BC location now
-		locationJpaRepository.delete(otherLocation);
+		locationJpaRepository.delete(loc);
 	}
 
 	@Test
@@ -92,7 +94,8 @@ public class LocationPersistenceTests {
 	@Test
 	@Transactional  //note this is needed because we will get a lazy load exception unless we are in a tx
 	public void testFindWithChildren() throws Exception {
-		Location arizona = locationJpaRepository.findOne(3L);
+		Optional<Location> loc = locationJpaRepository.findById(3L);
+		Location arizona = loc.get();
 		assertEquals("United States", arizona.getCountry());
 		assertEquals("Arizona", arizona.getState());
 		
