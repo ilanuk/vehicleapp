@@ -206,41 +206,12 @@ public class VehicleRestEndpointTests1 {
 
 	@Test
 	public void getLastVehicle() throws JsonParseException, JsonMappingException, IOException {
-//		 ParameterizedTypeReference<List<LinkedHashMap<String,Vehicle>>> parameterizedTypeReference
-//		 = new ParameterizedTypeReference<List<LinkedHashMap<String,Vehicle>>>(){};
-//		RestTemplate template = new RestTemplate();
-//		 ResponseEntity<List<Vehicle>> response =
-//		 template.exchange(BASE_URI+"/vehicles",
-//		 HttpMethod.GET,null,parameterizedTypeReference);
-//		ResponseEntity<Object> response = template.getForEntity(BASE_URI + "/vehicles", Object.class);
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<Object> response = template.getForEntity(BASE_URI + "/vehicles", Object.class);
-//		List<LinkedHashMap<String,Object>> vehicles 
-//		= template.getForObject(BASE_URI + "/vehicles", List.class);
-//		System.out.println(vehicles.size());
-//		for(LinkedHashMap<String,Object> veh : vehicles){
-//			Object vehmap = veh.get("_embedded");
-//			System.out.println(vehmap);
-//			System.out.println("ID="+vehicle.get("id")+",Name="+vehicle.get("name")
-//			+",Price="+vehicle.get("price")
-//			+",YearFirstMade="+vehicle.get("yearFirstMade")
-//			+",BatchNo="+vehicle.get("batchNo"));;
-//		}
 		
 		System.out.println(response.getBody().toString());
 		System.out.println(response.getStatusCodeValue());
 		assertNotNull(response);
-		MyJSON mj = new MyJSON();
-		mj = mj.setValues(response.getBody().toString());
-		System.out.println(mj.getEmbedded());
-//		 List<Vehicle> vehicles = response.getBody();
-//		 Vehicle lst = vehicles.get(vehicles.size() - 1);
-//		 System.out.println(lst);
-//		ResponseEntity<Object[]> responseEntity = template.getForEntity(BASE_URI + "/vehicles", Object[].class);
-//		Object[] vehicles = responseEntity.getBody();
-//		MediaType contentType = responseEntity.getHeaders().getContentType();
-//		HttpStatus statusCode = responseEntity.getStatusCode();
-//		assertNotNull(vehicles);
 	}
 
 	// =========================================== CORS Headers
