@@ -10,5 +10,7 @@ public class RepositoryConfig extends RepositoryRestConfigurerAdapter {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(VehicleType.class,Vehicle.class,Manufacturer.class,Location.class);
+        config.setBasePath("/api");
     }
+    
 }

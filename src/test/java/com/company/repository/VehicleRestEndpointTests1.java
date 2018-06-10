@@ -28,7 +28,8 @@ import com.company.model.Vehicle;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class VehicleRestEndpointTests1 {
-	private static final String BASE_URI = "http://localhost:8080";
+	//check the RepositoryConfig settings to change the baseURI
+	private static final String BASE_URI = "http://localhost:8080/api";
 	private static final int UNKNOWN_ID = Integer.MAX_VALUE;
 
 	@Test
