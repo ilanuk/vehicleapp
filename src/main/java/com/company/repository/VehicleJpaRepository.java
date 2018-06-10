@@ -12,9 +12,10 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
 import com.company.model.Vehicle;
+import com.company.model.projections.VehicleDetailView;
 
 @Repository
-@RepositoryRestResource
+@RepositoryRestResource(excerptProjection= VehicleDetailView.class)
 public interface VehicleJpaRepository extends JpaRepository<Vehicle, Long>, VehicleJpaRepositoryCustom {
 	List<Vehicle> findByPriceGreaterThanEqualAndPriceLessThanEqual(BigDecimal low, BigDecimal high);
 	
