@@ -7,9 +7,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -24,6 +26,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.company.model.Vehicle;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -201,17 +205,34 @@ public class VehicleRestEndpointTests1 {
 	}
 
 	@Test
-	public void getLastVehicle() {
-		 ParameterizedTypeReference<List<Vehicle>> parameterizedTypeReference =
-		 new ParameterizedTypeReference<List<Vehicle>>(){};
-		RestTemplate template = new RestTemplate();
+	public void getLastVehicle() throws JsonParseException, JsonMappingException, IOException {
+//		 ParameterizedTypeReference<List<LinkedHashMap<String,Vehicle>>> parameterizedTypeReference
+//		 = new ParameterizedTypeReference<List<LinkedHashMap<String,Vehicle>>>(){};
+//		RestTemplate template = new RestTemplate();
 //		 ResponseEntity<List<Vehicle>> response =
 //		 template.exchange(BASE_URI+"/vehicles",
 //		 HttpMethod.GET,null,parameterizedTypeReference);
+//		ResponseEntity<Object> response = template.getForEntity(BASE_URI + "/vehicles", Object.class);
+		RestTemplate template = new RestTemplate();
 		ResponseEntity<Object> response = template.getForEntity(BASE_URI + "/vehicles", Object.class);
+//		List<LinkedHashMap<String,Object>> vehicles 
+//		= template.getForObject(BASE_URI + "/vehicles", List.class);
+//		System.out.println(vehicles.size());
+//		for(LinkedHashMap<String,Object> veh : vehicles){
+//			Object vehmap = veh.get("_embedded");
+//			System.out.println(vehmap);
+//			System.out.println("ID="+vehicle.get("id")+",Name="+vehicle.get("name")
+//			+",Price="+vehicle.get("price")
+//			+",YearFirstMade="+vehicle.get("yearFirstMade")
+//			+",BatchNo="+vehicle.get("batchNo"));;
+//		}
+		
 		System.out.println(response.getBody().toString());
 		System.out.println(response.getStatusCodeValue());
 		assertNotNull(response);
+		MyJSON mj = new MyJSON();
+		mj = mj.setValues(response.getBody().toString());
+		System.out.println(mj.getEmbedded());
 //		 List<Vehicle> vehicles = response.getBody();
 //		 Vehicle lst = vehicles.get(vehicles.size() - 1);
 //		 System.out.println(lst);

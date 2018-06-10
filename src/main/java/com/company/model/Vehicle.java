@@ -100,11 +100,11 @@ public class Vehicle implements Serializable{
 
 	@Override
 	public String toString() {
-		return "{\"id:\"" + id + ", \"name:\"" + name + ",\"price:\"" + price +
-				",\"yearFirstMade:\"" + yearFirstMade
-				+ ",\"manufacturer:\"" + manufacturer +
-				",\"vehicleType:\"" + vehicleType +
-				",\"batchNo:\"" + batchNo + "}";
+		return "{\"id\":\"" + id + "\", \"name\":\"" + name + "\",\"price\":\"" + price +
+				"\",\"yearFirstMade\":\"" + yearFirstMade
+				+ "\",\"manufacturer\":\"" + manufacturer +
+				"\",\"vehicleType\":\"" + vehicleType +
+				"\",\"batchNo\":\"" + batchNo + "\"}";
 	}
 
 	
