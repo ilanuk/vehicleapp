@@ -1,4 +1,4 @@
-package com.company.utils;
+	package com.company.utils;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			ServletWebRequest request) {
 		
 			RestErrorMessage error = 
-					new RestErrorMessage(HttpStatus.valueOf(request.getResponse().getStatus()), e.getCode(), 
-							e.getMessage(), e.getDetailedMessage(), e.toString());
+					new RestErrorMessage(HttpStatus.valueOf(request.getResponse().getStatus()),
+							e.getCode(), 
+							e.getMessage(), 
+							e.getDetailedMessage(), 
+							e.toString());
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			return handleExceptionInternal(e, error, headers, HttpStatus.OK, request);

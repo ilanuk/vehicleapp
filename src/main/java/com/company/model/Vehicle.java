@@ -1,5 +1,6 @@
 package com.company.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,12 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @NamedQuery(name="Vehicle.findAllVehiclesByType", query="select m from Vehicle m where m.vehicleType.name = :name")
-public class Vehicle {
+public class Vehicle implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8699778740434948317L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -28,6 +32,10 @@ public class Vehicle {
 	@Column(name="YEARFIRSTMADE")
 	private Date yearFirstMade;
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@ManyToOne
 	private Manufacturer manufacturer;
 

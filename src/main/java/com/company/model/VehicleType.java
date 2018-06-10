@@ -1,5 +1,6 @@
 package com.company.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity(name="VEHICLETYPE")
-public class VehicleType {
+public class VehicleType implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6797910556821821932L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

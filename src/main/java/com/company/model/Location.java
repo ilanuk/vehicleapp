@@ -1,6 +1,7 @@
 package com.company.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Location {
+public class Location implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1758252203278996266L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

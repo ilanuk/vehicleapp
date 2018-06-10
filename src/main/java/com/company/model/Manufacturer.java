@@ -1,5 +1,6 @@
 package com.company.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +24,16 @@ import javax.persistence.OneToMany;
 		+ "LEFT JOIN Vehicle mod ON (m.id = mod.manufacturer_id) "
 		+ "LEFT JOIN VehicleType mt ON (mt.id = mod.vehicletype_id) "
 	    + "WHERE (mt.name = ?)", resultClass = Manufacturer.class)
-public class Manufacturer {
+public class Manufacturer implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8947917447657177988L;
+
+	/**
+	 * 
+	 */
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

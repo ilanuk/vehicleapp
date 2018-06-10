@@ -1,6 +1,10 @@
 package com.company.utils;
 
 public class RestException extends RuntimeException{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int code;
 	private String message;
 	private String detailedMessage;
