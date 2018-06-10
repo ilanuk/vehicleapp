@@ -3,6 +3,7 @@ package com.company.repository;
 import static junit.framework.TestCase.fail;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -41,6 +42,9 @@ public class VehicleRestEndpointTests1 {
 		Vehicle veh = result.getBody();
 		System.out.println(veh.getName());
 		System.out.println(veh.getId());
+		result.getHeaders().forEach((k,list)->{
+			System.out.println("K="+k+":list="+list);
+		});
 	}
 
 	@Test
@@ -75,6 +79,7 @@ public class VehicleRestEndpointTests1 {
 		v.setYearFirstMade(new Date());
 		RestTemplate template = new RestTemplate();
 		URI location = template.postForLocation(BASE_URI + "/vehicles/", v, Vehicle.class);
+		
 		System.out.println(location.getPath());
 		assertThat(location, notNullValue());
 		ResponseEntity<Vehicle> result = template.getForEntity(location, Vehicle.class);
@@ -85,6 +90,50 @@ public class VehicleRestEndpointTests1 {
 		Vehicle veh = result.getBody();
 		System.out.println(veh.getName());
 		System.out.println(veh.getId());
+		//delete the newly created entity
+		template.delete(location);
+		try {
+			ResponseEntity<Vehicle> response = template.getForEntity(location, Vehicle.class);
+			fail("should return 404 not found");
+		}
+		catch (HttpClientErrorException e) {
+			assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
+		}
+
+	}
+	@Test
+	public void test_create_new_vehicle_success2() {
+		Vehicle v = new Vehicle();
+		v.setBatchNo(10);
+		v.setName("Test Vehicle");
+		v.setPrice(BigDecimal.valueOf(55L));
+		v.setYearFirstMade(new Date());
+		RestTemplate template = new RestTemplate();
+		//URI location = template.postForLocation(BASE_URI + "/vehicles/", v, Vehicle.class);
+		ResponseEntity<Vehicle> response 
+		= template.postForEntity(BASE_URI+"/vehicles", v, Vehicle.class);
+		assertEquals(response.getStatusCode(),HttpStatus.CREATED);
+		List<String> values = response.getHeaders().get("Location");
+		System.out.println(values.get(0));
+		assertThat(values.get(0), notNullValue());
+		ResponseEntity<Vehicle> result = template.getForEntity(values.get(0), Vehicle.class);
+		System.out.println(result);
+		assertNotNull(result);
+		assertNotNull(result.getBody());
+		System.out.println(result.getBody().toString());
+		Vehicle veh = result.getBody();
+		System.out.println(veh.getName());
+		System.out.println(veh.getId());
+		//delete the newly created entity
+		template.delete(values.get(0));
+		try {
+			ResponseEntity<Vehicle> res = template.getForEntity(values.get(0), Vehicle.class);
+			fail("should return 404 not found");
+		}
+		catch (HttpClientErrorException e) {
+			assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
+		}
+
 	}
 
 	@Test
