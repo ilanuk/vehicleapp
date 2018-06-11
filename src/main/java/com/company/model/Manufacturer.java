@@ -106,5 +106,18 @@ public class Manufacturer implements Serializable {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
+
+	@Override
+	public String toString() {
+		return "{\"id\":\"" + id 
+				+ "\", \"name\":\"" + name 
+				+ "\", \"foundedDate\":\"" + foundedDate 
+				+ "\", \"averageYearlySales\":\"" + averageYearlySales 
+				+ "\", \"active\":\"" + active 
+				+ "\", \"vehicles\":\"" + vehicles 
+				+ "\", \"headquarters\":\"" + headquarters + "\"}";
+	}
+	
+	
 }
 

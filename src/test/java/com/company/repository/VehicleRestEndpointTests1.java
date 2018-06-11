@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.company.model.Location;
+import com.company.model.Manufacturer;
 import com.company.model.Vehicle;
+import com.company.model.VehicleType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -214,11 +216,34 @@ public class VehicleRestEndpointTests1 {
 		ParameterizedTypeReference<Resources<Vehicle>> resourceParameterizedTypeReference =
 		        new ParameterizedTypeReference<Resources<Vehicle>>() {};
 		
-		Resources<Vehicle> itemResource = traverson.follow("vehicles").
+		Resources<Vehicle> vehicleResource = traverson.follow("vehicles").
 		        toObject(resourceParameterizedTypeReference);
 
-		for (Vehicle vehicle : itemResource) {
+		for (Vehicle vehicle : vehicleResource) {
 			System.out.println(vehicle);
+		}
+		ParameterizedTypeReference<Resources<Manufacturer>> resParameterizedTypeReference =
+		        new ParameterizedTypeReference<Resources<Manufacturer>>() {};
+		Resources<Manufacturer> manufacturerResource = traverson.follow("mfgs").
+		        toObject(resParameterizedTypeReference);
+
+		for (Manufacturer mfg : manufacturerResource) {
+			System.out.println(mfg);
+		}
+
+		ParameterizedTypeReference<Resources<Location>> resLocParameterizedTypeReference =
+		        new ParameterizedTypeReference<Resources<Location>>() {};
+		Resources<Location> locResource = traverson.follow("locations").
+		        toObject(resLocParameterizedTypeReference);
+		for (Location loc : locResource) {
+			System.out.println(loc);
+		}
+		ParameterizedTypeReference<Resources<VehicleType>> resTypParameterizedTypeReference =
+		        new ParameterizedTypeReference<Resources<VehicleType>>() {};
+		Resources<VehicleType> typResource = traverson.follow("vehicleTypes").
+		        toObject(resTypParameterizedTypeReference);
+		for (VehicleType typ : typResource) {
+			System.out.println(typ);
 		}
 	}
 

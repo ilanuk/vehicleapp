@@ -59,4 +59,13 @@ public class Location implements Serializable{
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "{\"id\":\"" + id 
+				+ "\", \"state\":\"" + state 
+				+ "\", \"country\":\"" + country 
+				+ "\", \"manufacturers\":\"" + manufacturers
+				+ "\"}";
+	}
+
 }
