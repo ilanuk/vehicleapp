@@ -15,7 +15,8 @@ import com.company.model.Vehicle;
 import com.company.model.projections.VehicleDetailView;
 
 @Repository
-@RepositoryRestResource(excerptProjection= VehicleDetailView.class)
+//@RepositoryRestResource(excerptProjection= VehicleDetailView.class)
+@RepositoryRestResource
 public interface VehicleJpaRepository extends JpaRepository<Vehicle, Long>, VehicleJpaRepositoryCustom {
 	List<Vehicle> findByPriceGreaterThanEqualAndPriceLessThanEqual(BigDecimal low, BigDecimal high);
 	

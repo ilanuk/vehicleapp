@@ -10,15 +10,18 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -201,6 +204,21 @@ public class VehicleRestEndpointTests1 {
 			fail("should return 404 not found");
 		} catch (HttpClientErrorException e) {
 			assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
+		}
+	}
+	
+	@Test 
+	public void testTraversion() throws URISyntaxException {
+		
+		Traverson traverson = new Traverson(new URI(BASE_URI), MediaTypes.HAL_JSON);
+		ParameterizedTypeReference<Resources<Vehicle>> resourceParameterizedTypeReference =
+		        new ParameterizedTypeReference<Resources<Vehicle>>() {};
+		
+		Resources<Vehicle> itemResource = traverson.follow("vehicles").
+		        toObject(resourceParameterizedTypeReference);
+
+		for (Vehicle vehicle : itemResource) {
+			System.out.println(vehicle);
 		}
 	}
 
