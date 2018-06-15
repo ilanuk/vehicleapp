@@ -22,10 +22,13 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.company.model.Location;
 import com.company.model.Manufacturer;
@@ -34,47 +37,100 @@ import com.company.model.VehicleType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import reactor.core.publisher.Mono;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class VehicleRestEndpointTests1 {
+public class VehicleRestEndpointTests2 {
 	//check the RepositoryConfig settings to change the baseURI
 	private static final String BASE_URI = "http://localhost:8080/api";
 	private static final int UNKNOWN_ID = Integer.MAX_VALUE;
 
 	@Test
 	public void listVehicleWorksOK() {
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<Vehicle> result = template.getForEntity(BASE_URI + "/vehicles/1", Vehicle.class);
-		System.out.println(result);
+		WebClient webclient = WebClient.create(BASE_URI);
+		long id = 1;
+		Mono<Vehicle> result =	webclient.get()
+				.uri("/vehicles/{id}",id).accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(Vehicle.class);
 		assertNotNull(result);
-		assertNotNull(result.getBody());
-		System.out.println(result.getBody().toString());
-		Vehicle veh = result.getBody();
-		System.out.println(veh.getName());
-		System.out.println(veh.getId());
-		result.getHeaders().forEach((k,list)->{
-			System.out.println("K="+k+":list="+list);
-		});
+		Vehicle vehicle = result.blockOptional().get();
+		System.out.println(vehicle);
+		assertThat(vehicle.getId(),is(id));
 	}
 
 	@Test
 	public void test_get_one_success() {
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<Vehicle> response = template.getForEntity(BASE_URI + "/vehicles/1", Vehicle.class);
-		Vehicle vehicle = response.getBody();
+//		RestTemplate template = new RestTemplate();
+//		ResponseEntity<Vehicle> response = template.getForEntity(BASE_URI + "/vehicles/1", Vehicle.class);
+//		Vehicle vehicle = response.getBody();
+//		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+		WebClient webclient = WebClient.create(BASE_URI);
+		long id = 1;
+		Mono<ClientResponse> response =	webclient.get()
+				.uri("/vehicles/{id}",id).accept(MediaType.APPLICATION_JSON)
+				.exchange();
+		assertNotNull(response);
+		assertThat(response.blockOptional().get().statusCode(),is(HttpStatus.OK));
+		Mono<Vehicle> monoBody =
+				response.flatMap(clientResponse -> clientResponse.bodyToMono(Vehicle.class));
+		Vehicle vehicle = monoBody.blockOptional().get();
 		System.out.println(vehicle);
 		assertThat(vehicle.getName(), is("Chevrolet Bolt EV"));
-		assertThat(response.getStatusCode(), is(HttpStatus.OK));
-
 	}
 
 	@Test
+	public void test_get_all_success() {
+//		RestTemplate template = new RestTemplate();
+//		ResponseEntity<Vehicle> response = template.getForEntity(BASE_URI + "/vehicles/1", Vehicle.class);
+//		Vehicle vehicle = response.getBody();
+//		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+		ParameterizedTypeReference<Resources<Vehicle>> resourceParameterizedTypeReference =
+		        new ParameterizedTypeReference<Resources<Vehicle>>() {};
+		WebClient webclient = WebClient.create(BASE_URI);
+		Mono<ClientResponse> response =	webclient.get()
+				.uri("/vehicles").accept(MediaTypes.HAL_JSON)
+				.exchange();
+		assertNotNull(response);
+		Object obj = response.blockOptional().get().toEntity(resourceParameterizedTypeReference);
+		assertThat(response.blockOptional().get().statusCode(),is(HttpStatus.OK));
+		//Mono<List<Vehicle> monoBody =
+				//response.flatMap(clientResponse -> clientResponse.bodyToMono(Vehicle.class));
+		Mono<ResponseEntity<Resources<Vehicle>>> vehicleResourceMono = 
+				response.blockOptional().get().toEntity(resourceParameterizedTypeReference);
+		 Mono<Resources<Vehicle>> mono 
+		 = response.blockOptional().get().bodyToMono(resourceParameterizedTypeReference);
+		 
+		 System.out.println("mono="+ mono);
+		Resources<Vehicle> vehicles = mono.blockOptional().get();
+		System.out.println("vehicleResourceMono="+ vehicleResourceMono);
+		
+		Resources<Vehicle> vehicleResource = vehicleResourceMono
+				.blockOptional().get().getBody();
+		System.out.println("vehicleResource="+ vehicleResource);
+		System.out.println("vehicles="+ vehicles);
+		for (Vehicle vehicle : vehicleResource) {
+			System.out.println(vehicle);
+		}
+
+		//		Vehicle vehicle = monoBody.blockOptional().get();
+//		System.out.println(vehicle);
+//		assertThat(vehicle.getName(), is("Chevrolet Bolt EV"));
+	}
+	@Test
 	public void test_get_by_id_failure_not_found() {
 		try {
-			RestTemplate template = new RestTemplate();
-			ResponseEntity<Vehicle> response = template.getForEntity(BASE_URI + "/vehicles/" + UNKNOWN_ID,
-					Vehicle.class);
-			fail("should return 404 not found");
+//			RestTemplate template = new RestTemplate();
+//			ResponseEntity<Vehicle> response = template.getForEntity(BASE_URI + "/vehicles/" + UNKNOWN_ID,
+//					Vehicle.class);
+			WebClient webclient = WebClient.create(BASE_URI);
+			long id = UNKNOWN_ID;
+			Mono<ClientResponse> response =	webclient.get()
+					.uri("/vehicles/{id}",id).accept(MediaType.APPLICATION_JSON)
+					.exchange();
+			assertNotNull(response);
+			assertThat(response.blockOptional().get().statusCode(),is(HttpStatus.NOT_FOUND));
 		} catch (HttpClientErrorException e) {
 			assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
 		}
@@ -82,29 +138,59 @@ public class VehicleRestEndpointTests1 {
 
 	@Test
 	public void test_create_new_vehicle_success() {
+//		RestTemplate template = new RestTemplate();
+//		URI location = template.postForLocation(BASE_URI + "/vehicles/", v, Vehicle.class);
 		Vehicle v = new Vehicle();
 		v.setBatchNo(10);
 		v.setName("Test Vehicle");
 		v.setPrice(BigDecimal.valueOf(55L));
 		v.setYearFirstMade(new Date());
-		RestTemplate template = new RestTemplate();
-		URI location = template.postForLocation(BASE_URI + "/vehicles/", v, Vehicle.class);
-		
+		WebClient webclient = WebClient.create(BASE_URI);
+		Mono<ClientResponse> response =	webclient.post()
+				.uri("/vehicles")
+				.body(Mono.just(v), Vehicle.class)
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange();
+		ClientResponse cresponse = response.blockOptional().get();
+		assertThat(cresponse.statusCode(),
+				is(HttpStatus.CREATED));
+		System.out.println(cresponse.statusCode());
+
+		URI location = cresponse.headers().asHttpHeaders().getLocation();
 		System.out.println(location.getPath());
 		assertThat(location, notNullValue());
-		ResponseEntity<Vehicle> result = template.getForEntity(location, Vehicle.class);
-		System.out.println(result);
-		assertNotNull(result);
-		assertNotNull(result.getBody());
-		System.out.println(result.getBody().toString());
-		Vehicle veh = result.getBody();
-		System.out.println(veh.getName());
-		System.out.println(veh.getId());
+		Mono<ClientResponse> nresponse =	webclient.get()
+				.uri(location).accept(MediaType.APPLICATION_JSON)
+				.exchange();
+		assertNotNull(nresponse);
+		assertThat(nresponse.blockOptional().get().statusCode(),
+				is(HttpStatus.OK));
+		Mono<Vehicle> monoBody =
+				nresponse.flatMap(clientResponse -> clientResponse.bodyToMono(Vehicle.class));
+		Vehicle vehicle = monoBody.blockOptional().get();
+		System.out.println(vehicle);
+
+		System.out.println(vehicle.getName());
+		System.out.println(vehicle.getId());
 		//delete the newly created entity
-		template.delete(location);
+		Mono<ClientResponse> dresponse =	webclient.delete()
+				.uri(location).accept(MediaType.APPLICATION_JSON)
+				.exchange();
+		assertNotNull(dresponse);
+		assertThat(dresponse.blockOptional().get().statusCode(),
+				is(HttpStatus.NO_CONTENT));
+
+		//		template.delete(location);
 		try {
-			ResponseEntity<Vehicle> response = template.getForEntity(location, Vehicle.class);
-			fail("should return 404 not found");
+//			RestTemplate template = new RestTemplate();
+//			ResponseEntity<Vehicle> response1 = template.getForEntity(location, Vehicle.class);
+			Mono<ClientResponse> fresponse =	webclient.get()
+					.uri(location).accept(MediaType.APPLICATION_JSON)
+					.exchange();
+			assertNotNull(fresponse);
+			assertThat(fresponse.blockOptional().get().statusCode(),
+					is(HttpStatus.NOT_FOUND));
+			//fail("should return 404 not found");
 		}
 		catch (HttpClientErrorException e) {
 			assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
