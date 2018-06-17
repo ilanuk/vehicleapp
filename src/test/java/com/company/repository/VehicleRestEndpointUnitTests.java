@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.company.MainApplication;
+import com.company.model.Location;
 import com.company.model.Manufacturer;
 import com.company.model.Vehicle;
 
@@ -78,12 +79,19 @@ public class VehicleRestEndpointUnitTests {
 
     @Test
     public void whenSaveOneToManyRelationship_thenCorrect() throws JSONException{
+    	Location loc = new Location();
+    	loc.setCountry("United States");
+    	loc.setState("New California");
+        ResponseEntity<Location> loc1 = template.postForEntity(LOCATION_ENDPOINT, loc, Location.class);
+		assertEquals(HttpStatus.CREATED, loc1.getStatusCode());
+		Location locout = loc1.getBody();
+//		URI vUril = loc1.getHeaders().getLocation();
         Manufacturer mfg = new Manufacturer();
-        mfg.setName("Honda Motor Company");
+        mfg.setName("My Honda Motor Company");
         mfg.setActive(true);
         mfg.setAverageYearlySales(new BigDecimal(2000000L));
         mfg.setFoundedDate(new Date());
-        
+        mfg.setHeadquarters(locout);
         ResponseEntity<Manufacturer> mfg1 = template.postForEntity(MANUFACTURER_ENDPOINT, mfg, Manufacturer.class);
 		assertEquals(HttpStatus.CREATED, mfg1.getStatusCode());
 		URI vUri0 = mfg1.getHeaders().getLocation();

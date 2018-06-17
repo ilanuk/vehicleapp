@@ -54,7 +54,7 @@ public class Manufacturer implements Serializable {
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 	@ManyToOne
-	@JoinColumn(name="LOCATION_ID", nullable=false, updatable=false)
+	@JoinColumn(name="LOCATION_ID")
 	private Location headquarters;
 
 	public String getName() {
