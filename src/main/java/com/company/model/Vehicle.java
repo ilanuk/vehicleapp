@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @NamedQuery(name="Vehicle.findAllVehiclesByType", query="select m from Vehicle m where m.vehicleType.name = :name")

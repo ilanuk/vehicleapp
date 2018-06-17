@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.company.model.Manufacturer;
 
 @Repository
-@RepositoryRestResource(path="mfgs", collectionResourceRel="mfgs")
+@RepositoryRestResource(path="mfgs", collectionResourceRel="mfgs", itemResourceRel="mfg")
 public interface ManufacturerJpaRepository extends JpaRepository<Manufacturer, Long> {
 	List<Manufacturer> findByFoundedDateBefore(Date date);
 	
