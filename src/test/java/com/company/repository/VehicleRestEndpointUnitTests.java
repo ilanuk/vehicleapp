@@ -30,7 +30,7 @@ import com.company.model.Vehicle;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MainApplication.class, 
   webEnvironment = WebEnvironment.DEFINED_PORT)
-public class VehicleRestEndpointTests3 {
+public class VehicleRestEndpointUnitTests {
  
     @Autowired
     private TestRestTemplate template;
